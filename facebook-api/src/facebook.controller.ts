@@ -16,8 +16,8 @@ export class FacebookController {
   ) {}
 
   @Get()
-  getHello(): Promise<void> {
-     this.facebookAdsService.getHello();
+  async getHello(): Promise<void> {
+    await  this.facebookAdsService.getHello();
      return  
   }
   @Post('analyze')
