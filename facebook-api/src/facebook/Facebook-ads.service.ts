@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
  
 import { ads_fields } from './constants';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import sleep from 'src/utils/sleep';
 
 @Injectable()
 export class FacebookAdsService {
@@ -203,5 +204,10 @@ export class FacebookAdsService {
     await page.setExtraHTTPHeaders(headers);
     return { browser, page };
   };
+  async getHello(): Promise<void> {
+    console.log("Request started")
+    await sleep(6000*3) 
+
+  }
   
 }

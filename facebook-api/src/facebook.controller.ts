@@ -15,6 +15,11 @@ export class FacebookController {
     private facebookReport: ReportService,
   ) {}
 
+  @Get()
+  getHello(): Promise<void> {
+     this.facebookAdsService.getHello();
+     return  
+  }
   @Post('analyze')
   async analyzeFacebook(@Body() body: any, @Res() res: Response) {
     try {
