@@ -206,7 +206,7 @@ export class FacebookAdsService {
   };
   async getHello(): Promise<void> {
     console.log("Request started")
-    await sleep(6000*3) 
+    await sleep(600000) 
 
   }
   
