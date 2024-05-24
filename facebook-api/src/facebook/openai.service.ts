@@ -14,8 +14,8 @@ import {
   LandingPageAnalysis,
   LandingPageAnalysisResult,
   TextAnalysis,
+  TextAnalysisError,
 } from 'src/facebook/models/interfaceGpt';
- 
 
 @Injectable()
 export class OpenAIService {
@@ -34,27 +34,26 @@ export class OpenAIService {
   async sendTextPrompt(
     promptData: GPTads,
     brandName: string,
-  ): Promise<TextAnalysis> {
+  ): Promise<TextAnalysis|TextAnalysisError> {
     const system_content = `
-Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
-technology_feature: What is the key technical feature of this product that distinguishes it from the competition?
-key_selling_point: What is the unique selling proposition of the product that will attract customers? Elaborate!
-age_range: To which age group is this product primarily targeted? Why?
+Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook text ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
+
+JSON GUIDELINES:
+value_proposition:Identify the unique selling points  that competitors emphasize to differentiate themselves,  for instance fast delivery, unbeatable quality, or unique features.
+promises:Identify the promise that competitors emphasize to differentiate themselves, for instance fast delivery, unbeatable quality, or unique features.
 genders: Is this product aimed at a specific gender, or is it universal? Why do you think so?
-description: Provide a detailed description of the ad: "${promptData.ad_creative_bodies}"
-focus: On what aspect of the product or which solved problem should we primarily focus our marketing?
-promotional_strategies: What innovative marketing strategies will we use to promote this product?
-platforms: On which platforms (social media, traditional media, etc.) should we focus our marketing efforts?
-strategies: What overall market strategies should we adopt to ensure the product's success?
-strategic_positioning: How will we position the product relative to competitors in the market?
-recommendations: What are your final recommendations for the launch and promotion of this product?
+age_range: To which age group is this product primarily targeted? Why?
+emotions:Determine the sentiments competitors aim to evoke, such as humor, urgency, or curiosity, and whether they use interactive elements like questions to engage the reader.
+tone:Analyze the choice of language (plain vs. fancy terms) and the tone used (formal, playful, or authoritative) to understand the brand's persona and target audience.
+cta:Identify the clear next steps or CTAs used in the ads (e.g., "Buy Now," "Learn More") to gain insights into later stages of the sales funnel and overall objectives.
+problem_solving:Examine how competitors frame a problem and position their product or service as the solution within the ad copy, as this is a classic persuasion approach.
 Use these guidelines to structure your analysis and fill in the following JSON with detailed and specific information for each category. The resulting JSON object should be in this format: {"q":"string","a":"string"} ONLY RESPOND WITH THIS JSON, NOTHING ELSE:
-{"location":"","technology_feature":"","key_selling_point":"","age_range":"","genders":"","description":"","focus":"","promotional_strategies":"","platforms":"","strategies":"","strategic_positioning":"","recommendations":""}
-Make sure to provide specific details and examples for each point.
+{"value_proposition":"","promises":"","genders":"","age_range":"","emotions":"","tone":"","cta":"","problem_solving":""}
+AD TEXT :
+${promptData.ad_creative_bodies}
   
     `;
     try {
-      console.log('OPEN_AI_API_URL =>>>>>>', this.OPEN_AI_API_URL);
       const body = JSON.stringify({
         model: this.GPT_TEXT_MODEL, // Specify the model you wish to use
         messages: [
@@ -93,18 +92,15 @@ Make sure to provide specific details and examples for each point.
     } catch (error) {
       console.error('Unexpected error:', error);
       return {
-        location: '',
-        technology_feature: '',
-        key_selling_point: '',
-        age_range: '',
-        genders: '',
-        description: '',
-        focus: '',
-        promotional_strategies: '',
-        platforms: '',
-        strategies: '',
-        strategic_positioning: '',
-        recommendations: '',
+      
+        value_proposition:"",
+        promises: "",
+        genders: "",
+        emotions: "",
+        tone: "",
+        description: "",
+        cta: "",
+        problem_solving:"",
       };
     }
   }
@@ -116,7 +112,7 @@ Make sure to provide specific details and examples for each point.
   ): Promise<ImagePromptResponse | null> {
     try {
       const body: GPTPayload = {
-        model: 'gpt-4-turbo', // Specify the model you wish to use
+        model: 'gpt-4o-2024-05-13', // Specify the model you wish to use
         messages: [
           {
             role: 'system',
@@ -187,15 +183,14 @@ Make sure to provide specific details and examples for each point.
       Key features of the product/service (list of 3 strengths, in 1 word each):
       Main colors used in the product design or in its marketing communication, and their emotional or symbolic impact:
       Type of design (modern, minimalist, complex, vintage, etc.):
-      Level of interactivity with the visual:
-      Clarity of the message: How does the product/service communicate its value or usefulness to the consumer?
+      cta:Clarity of the message: How does the product/service communicate its value or usefulness to the consumer?
       Visual impact: The aesthetic appeal or the first impression that the product/service leaves:
       Detailed description of the product's features:
       Branding elements present (logo, brand color palette, typography):
       Areas of optimization: What aspects of the product/service could be improved to better meet consumer needs or to strengthen the brand message?
       Use these guidelines for a thorough and objective analysis, based on the available information or your interpretation if details are not explicitly provided. Provide a structured response in the following JSON with clearly defined sections corresponding to the points above.
       Feel free to write on multiple lines. Don't hesitate, be confident. Do not escape the double quotes in the output. The resulting JSON object should be in this format: {"q":"string","a":"string"} ONLY RESPOND WITH THIS JSON, NOTHING ELSE
-      {"key_message": "","key_features": [],"colors": "","design_type": "","interactivity": "","message_clarity": "","visual_impact": "","branding": "","area_of_optimization": ""}
+      {"key_message": "","key_features": [],"colors": "","design_type": "","cta": "","message_clarity": "","visual_impact": "","branding": "","area_of_optimization": ""}
           `;
     try {
       const response = await this.requestImageAnalysis(
@@ -229,16 +224,14 @@ Make sure to provide specific details and examples for each point.
   title_and_subtitles_clarity: Evaluate how easily the titles and subtitles communicate the main offer or the page's intent.
   persuasive_content: Identify content elements aimed at persuading the visitor, such as testimonials, case studies, success statistics, etc.
   keywords_usage: Examine how keywords are used for SEO and whether they are naturally integrated into the content.
-  navigation_ease: Comment on the ease of navigation on the page. Can visitors easily find what they are looking for?
-  responsive_design: Is the page well adapted to different screen formats (computer, tablet, mobile)?
-  visual_quality: Assess the quality of images, videos, and the overall design of the page.
+   visual_quality: Assess the quality of images, videos, and the overall design of the page.
   calls_to_action_cta: Detail the CTAs present on the page. Are they clearly visible and compelling?
   message_clarity: Is the main message of the page clear and easily understandable from the first moments of the visit?
   forms_conciseness: Are the forms present concise and only ask for essential information?
   social_proof_elements: Identify elements that add credibility to the offer, such as testimonials, customer reviews, quality badges, etc.
   sense_of_urgency: Does the page create a sense of urgency to prompt action, for example, through limited-time offers, counters, etc.?
   Never hesitate! Be confident.Fill in each criterion in the following JSON with observations and evaluations based on the analysis of the landing page, Return only a JSON 
-  {"brand_elements": "","communication_tone": "","brand_image_consistency": "","title_and_subtitles_clarity": "","persuasive_content": "","keywords_usage": "", "navigation_ease": "","responsive_design": "","visual_quality": "","calls_to_action_cta": "","message_clarity": "","forms_conciseness": "","social_proof_elements": "","sense_of_urgency": ""}
+  {"brand_elements": "","communication_tone": "","brand_image_consistency": "","title_and_subtitles_clarity": "","persuasive_content": "","keywords_usage": "",  "visual_quality": "","cta": "","message_clarity": "" "social_proof_elements": "","sense_of_urgency": ""}
   Make sure to provide specific details and examples for each point.
       `;
     try {
@@ -249,7 +242,9 @@ Make sure to provide specific details and examples for each point.
       );
       if (!response) throw new Error('Landing Page Analysis failed');
       return {
-        response: this.cleanJsonString(response.response) as LandingPageAnalysis,
+        response: this.cleanJsonString(
+          response.response,
+        ) as LandingPageAnalysis,
         landing_page_src: promptData.landing_page_src,
       };
     } catch (error) {
@@ -305,15 +300,15 @@ Make sure to provide specific details and examples for each point.
       throw error;
     }
   }
-  cleanJsonString (
+  cleanJsonString(
     jsonString: string,
-  ): TextAnalysis | CreativeAnalysis | LandingPageAnalysis  {
+  ): TextAnalysis | CreativeAnalysis | LandingPageAnalysis {
     // Step 1: Replace single quotes around keys and values with double quotes
     console.log('TEST => ', jsonString);
-  
+
     const cleanedString = jsonString.replace(/`/g, '').replace(/json/g, '');
-  
+
     // Return the cleaned string
     return JSON.parse(cleanedString);
-  };
+  }
 }

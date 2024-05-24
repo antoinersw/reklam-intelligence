@@ -24,6 +24,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const constants_1 = require("./constants");
 const puppeteer_1 = require("puppeteer");
+const sleep_1 = require("../utils/sleep");
 let FacebookAdsService = FacebookAdsService_1 = class FacebookAdsService {
     constructor(configService) {
         this.configService = configService;
@@ -57,12 +58,33 @@ let FacebookAdsService = FacebookAdsService_1 = class FacebookAdsService {
             return { ads, best_ads_limit, brandName: ads[0].page_name };
         });
     }
+    getPageNameFromPageUrl(facebookUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const pageUrlPattern = /https:\/\/www\.facebook\.com\/([^/?]+)\/?/;
+            const profileUrlPattern = /https:\/\/www\.facebook\.com\/profile\.php\?id=([^&]+)/;
+            const pageUrlMatch = facebookUrl.match(pageUrlPattern);
+            const profileUrlMatch = facebookUrl.match(profileUrlPattern);
+            if (pageUrlMatch) {
+                console.log(pageUrlMatch[1]);
+                return pageUrlMatch[1];
+            }
+            else if (profileUrlMatch) {
+                console.log(profileUrlMatch[1]);
+                return profileUrlMatch[1];
+            }
+            else {
+                throw new Error("Invalid Facebook URL");
+            }
+        });
+    }
+    ;
     getPageId(pageName) {
         return __awaiter(this, void 0, void 0, function* () {
             pageName = pageName.toLowerCase();
             try {
                 const url = `https://facebook.com/${pageName}/about_profile_transparency`;
-                const { browser, page } = yield this.initBrowser(true);
+                this.logger.debug("URL for page id is =>", url);
+                const { browser, page } = yield this.initBrowser(false);
                 yield page.goto(url, { waitUntil: 'networkidle2' });
                 const xpath = '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[4]/div/div/div/div[1]/div/div/div/div/div[2]/div/div/div/div/div[2]/div/div/div[2]/div[1]/span';
                 const element = yield page.$eval(`xpath/${xpath}`, (el) => el.textContent);
@@ -193,6 +215,12 @@ let FacebookAdsService = FacebookAdsService_1 = class FacebookAdsService {
         });
     }
     ;
+    getHello() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("Request started");
+            yield (0, sleep_1.default)(3 * 1000 * 60);
+        });
+    }
 };
 exports.FacebookAdsService = FacebookAdsService;
 exports.FacebookAdsService = FacebookAdsService = FacebookAdsService_1 = __decorate([

@@ -10,16 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
-const facebook_module_1 = require("./facebook.module");
 require("dotenv/config");
 const api_key_guard_1 = require("./api-key.guard");
 const config_1 = require("@nestjs/config");
+const app_module_1 = require("./app.module");
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
-        const app = yield core_1.NestFactory.create(facebook_module_1.FacebookModule);
+        const app = yield core_1.NestFactory.create(app_module_1.AppModule);
         app.enableCors();
         app.useGlobalGuards(new api_key_guard_1.ApiKeyGuard(new config_1.ConfigService()));
-        yield app.listen(3000);
+        yield app.listen(3001);
     });
 }
 bootstrap();

@@ -9,5 +9,6 @@ export declare class FacebookController {
     private facebookOpenai;
     private facebookReport;
     constructor(facebookAdsService: FacebookAdsService, facebookScraper: FacebookScraperService, facebookOpenai: OpenAIService, facebookReport: ReportService);
+    getHello(): Promise<string>;
     analyzeFacebook(body: any, res: Response): Promise<Response<any, Record<string, any>>>;
 }

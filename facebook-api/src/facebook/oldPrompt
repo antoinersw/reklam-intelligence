@@ -1,0 +1,16 @@
+Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook text ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
+
+technology_feature: What is the key technical feature of this product that distinguishes it from the competition?
+key_selling_point: What is the unique selling proposition of the product that will attract customers? Elaborate!
+age_range: To which age group is this product primarily targeted? Why?
+genders: Is this product aimed at a specific gender, or is it universal? Why do you think so?
+description: Provide a detailed description of the ad: "${promptData.ad_creative_bodies}"
+focus: On what aspect of the product or which solved problem should we primarily focus our marketing?
+promotional_strategies: What innovative marketing strategies will we use to promote this product?
+platforms: On which platforms (social media, traditional media, etc.) should we focus our marketing efforts?
+strategies: What overall market strategies should we adopt to ensure the product's success?
+strategic_positioning: How will we position the product relative to competitors in the market?
+recommendations: What are your final recommendations for the launch and promotion of this product?
+Use these guidelines to structure your analysis and fill in the following JSON with detailed and specific information for each category. The resulting JSON object should be in this format: {"q":"string","a":"string"} ONLY RESPOND WITH THIS JSON, NOTHING ELSE:
+{"location":"","technology_feature":"","key_selling_point":"","age_range":"","genders":"","description":"","focus":"","promotional_strategies":"","platforms":"","strategies":"","strategic_positioning":"","recommendations":""}
+Make sure to provide specific details and examples for each point.

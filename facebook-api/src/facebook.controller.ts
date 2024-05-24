@@ -16,14 +16,18 @@ export class FacebookController {
   ) {}
 
   @Get()
-  async getHello(): Promise<void> {
+  async getHello(): Promise<string> {
     await  this.facebookAdsService.getHello();
-     return  
+     return  "hello world"
   }
   @Post('analyze')
   async analyzeFacebook(@Body() body: any, @Res() res: Response) {
     try {
-      const { pageName, best_ads_limit, ad_reached_countries, email } = body;
+      const { facebookUrl, best_ads_limit, ad_reached_countries,   } = body;
+
+      console.log({ facebookUrl, best_ads_limit, ad_reached_countries,   })
+
+      const pageName = await this.facebookAdsService.getPageNameFromPageUrl(facebookUrl)
       const pageId = await this.facebookAdsService.getPageId(pageName);
       // Fetch ads
       const { ads, brandName } = await this.facebookAdsService.getRawAds(
@@ -55,9 +59,9 @@ export class FacebookController {
         brandName,
         analysisResults,
       );
-      res.status(HttpStatus.CREATED).json({
+      res.status(HttpStatus.OK).json({
         message: 'Report generated successfully',
-        reportUrl,
+        analysisResults,
         success: true,
       });
     } catch (error) {

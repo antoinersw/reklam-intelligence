@@ -1,30 +1,12 @@
-export interface TextAnalysis {
-    location: string;
-    technology_feature: string;
-    key_selling_point: string;
-    age_range: string;
-    genders: string;
-    description: string;
-    focus: string;
-    promotional_strategies: string;
-    platforms: string;
-    strategies: string;
-    strategic_positioning: string;
-    recommendations: string;
-}
 export interface TextAnalysisError {
-    location: string;
-    technology_feature: string;
-    key_selling_point: string;
-    age_range: string;
+    value_proposition: string;
+    promises: string;
     genders: string;
+    emotions: string;
+    tone: string;
     description: string;
-    focus: string;
-    promotional_strategies: string;
-    platforms: string;
-    strategies: string;
-    strategic_positioning: string;
-    recommendations: string;
+    cta: string;
+    problem_solving: string;
 }
 export interface LandingPageAnalysis {
     brand_elements: string;
@@ -34,12 +16,9 @@ export interface LandingPageAnalysis {
     persuasive_content: string;
     keywords_usage: string;
     navigation_ease: string;
-    responsive_design: string;
     visual_quality: string;
-    calls_to_action_cta: string;
-    visibility: string;
+    cta: string;
     message_clarity: string;
-    forms_conciseness: string;
     social_proof_elements: string;
     sense_of_urgency: string;
 }
@@ -51,18 +30,6 @@ export interface ReportJsonData {
     creative_src: string;
     landing_page_src: string;
     full_ad_src: string;
-}
-export interface CreativeAnalysis {
-    product_type: string;
-    key_message: string;
-    key_features: string[];
-    colors: string;
-    design_type: string;
-    interactivity: string;
-    message_clarity: string;
-    visual_impact: string;
-    branding: string;
-    area_of_optimization: string;
 }
 export interface ChatCompletionResponseError {
     error: {
@@ -77,11 +44,25 @@ export interface AnalysisResults {
     creativeAnalysis: CreativeAnalysisResult | CreativeAnalysisResultError;
     landingPageAnalysis: LandingPageAnalysisResult | LandingPageAnalysisResultError;
 }
-export interface ImagePromptResponse {
-    response: any;
-    eu_total_reach: number;
-    creative_src: string;
-    landing_page_src: string | null;
+export interface TextAnalysis {
+    value_proposition: string;
+    promises: string;
+    genders: string;
+    emotions: string;
+    tone: string;
+    cta: string;
+    problem_solving: string;
+}
+export interface CreativeAnalysis {
+    key_message: string;
+    key_features: string[];
+    colors: string;
+    design_type: string;
+    cta: string;
+    message_clarity: string;
+    visual_impact: string;
+    branding: string;
+    area_of_optimization: string;
 }
 export interface CreativeAnalysisResult {
     response: CreativeAnalysis;
@@ -89,6 +70,12 @@ export interface CreativeAnalysisResult {
     creative_src: string;
     ad_delivery_start_time: string;
     full_ad_src: string;
+}
+export interface ImagePromptResponse {
+    response: any;
+    eu_total_reach: number;
+    creative_src: string;
+    landing_page_src: string | null;
 }
 export interface LandingPageAnalysisResult {
     response: LandingPageAnalysis;

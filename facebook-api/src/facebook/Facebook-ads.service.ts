@@ -53,8 +53,28 @@ export class FacebookAdsService {
 
     return { ads, best_ads_limit, brandName: ads[0].page_name };
   }
+  async getPageNameFromPageUrl(facebookUrl:string){
+    const pageUrlPattern = /https:\/\/www\.facebook\.com\/([^/?]+)\/?/;
+    const profileUrlPattern = /https:\/\/www\.facebook\.com\/profile\.php\?id=([^&]+)/;
+  
+    const pageUrlMatch = facebookUrl.match(pageUrlPattern);
+    const profileUrlMatch = facebookUrl.match(profileUrlPattern);
+  
+    if (pageUrlMatch) {
+
+      console.log(pageUrlMatch[1])
+      return pageUrlMatch[1];
+    } else if (profileUrlMatch) {
+      console.log( profileUrlMatch[1])
+      return profileUrlMatch[1];
+    } else {
+      throw new Error("Invalid Facebook URL");
+    }
+  };
+ 
+
   async getPageId(pageName: string): Promise<number[]> {
-    pageName = pageName.toLowerCase();
+    pageName =  pageName.toLowerCase();
     // Assuming getPageIdByPageName is an async function
     // const getPageIdFromDB = await getPageIdByPageName(pageName);
     // if (getPageIdFromDB) {
@@ -63,7 +83,8 @@ export class FacebookAdsService {
 
     try {
       const url = `https://facebook.com/${pageName}/about_profile_transparency`;
-      const { browser, page } = await this.initBrowser(true);
+      this.logger.debug("URL for page id is =>", url)
+      const { browser, page } = await this.initBrowser(false);
       await page.goto(url, { waitUntil: 'networkidle2' });
 
       const xpath =
@@ -72,6 +93,7 @@ export class FacebookAdsService {
         `xpath/${xpath}`,
         (el) => el.textContent,
       );
+
       this.logger.debug('Debug page id from function => ', element);
       await browser.close();
       return [parseInt(element as string)];
@@ -206,7 +228,7 @@ export class FacebookAdsService {
   };
   async getHello(): Promise<void> {
     console.log("Request started")
-    await sleep(600000) 
+    await sleep(3*1000*60) 
 
   }
   

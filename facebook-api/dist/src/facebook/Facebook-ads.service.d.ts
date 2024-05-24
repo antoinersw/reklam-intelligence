@@ -6,6 +6,7 @@ export declare class FacebookAdsService {
     private readonly logger;
     constructor(configService: ConfigService);
     getRawAds(ad_reached_countries: CountryCode[], search_page_ids: number[], best_ads_limit: number, ads_limit?: number): Promise<GetRawAds>;
+    getPageNameFromPageUrl(facebookUrl: string): Promise<string>;
     getPageId(pageName: string): Promise<number[]>;
     processAds(ads: AdResponse[]): TransformedAd[];
     fetchAdsLibrary(params: AdsLibrarySearchParams, apiUrl: string): Promise<AdFirstResponse>;
@@ -14,4 +15,5 @@ export declare class FacebookAdsService {
         browser: Browser;
         page: Page;
     }>;
+    getHello(): Promise<void>;
 }

@@ -34,10 +34,18 @@ let FacebookController = class FacebookController {
         this.facebookOpenai = facebookOpenai;
         this.facebookReport = facebookReport;
     }
+    getHello() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.facebookAdsService.getHello();
+            return "hello world";
+        });
+    }
     analyzeFacebook(body, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { pageName, best_ads_limit, ad_reached_countries, email } = body;
+                const { facebookUrl, best_ads_limit, ad_reached_countries, } = body;
+                console.log({ facebookUrl, best_ads_limit, ad_reached_countries, });
+                const pageName = yield this.facebookAdsService.getPageNameFromPageUrl(facebookUrl);
                 const pageId = yield this.facebookAdsService.getPageId(pageName);
                 const { ads, brandName } = yield this.facebookAdsService.getRawAds(ad_reached_countries, pageId, best_ads_limit);
                 if (ads.length === 0) {
@@ -48,9 +56,9 @@ let FacebookController = class FacebookController {
                 const newAds = yield this.facebookScraper.scrapFacebook(ads, brandName, best_ads_limit);
                 const analysisResults = yield this.facebookOpenai.analyzeAds(newAds, brandName);
                 const reportUrl = yield this.facebookReport.makeReport(brandName, analysisResults);
-                res.status(common_1.HttpStatus.CREATED).json({
+                res.status(common_1.HttpStatus.OK).json({
                     message: 'Report generated successfully',
-                    reportUrl,
+                    analysisResults,
                     success: true,
                 });
             }
@@ -64,6 +72,12 @@ let FacebookController = class FacebookController {
     }
 };
 exports.FacebookController = FacebookController;
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FacebookController.prototype, "getHello", null);
 __decorate([
     (0, common_1.Post)('analyze'),
     __param(0, (0, common_1.Body)()),
