@@ -36,8 +36,8 @@ export class OpenAIService {
     brandName: string,
   ): Promise<TextAnalysis|TextAnalysisError> {
     const system_content = `
-Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook text ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
-
+ROLE: Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook text ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
+LANGUAGE : USE ONLY ENGLISH IN YOUR ANSWER.
 JSON GUIDELINES:
 value_proposition:Identify the unique selling points  that competitors emphasize to differentiate themselves,  for instance fast delivery, unbeatable quality, or unique features.
 promises:Identify the promise that competitors emphasize to differentiate themselves, for instance fast delivery, unbeatable quality, or unique features.
