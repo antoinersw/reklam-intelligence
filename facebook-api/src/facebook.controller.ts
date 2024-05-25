@@ -23,9 +23,9 @@ export class FacebookController {
   @Post('analyze')
   async analyzeFacebook(@Body() body: any, @Res() res: Response) {
     try {
-      const { facebookUrl, best_ads_limit, ad_reached_countries,   } = body;
+      const { facebookUrl, best_ads_limit, ad_reached_countries, companySelected  } = body;
 
-      console.log({ facebookUrl, best_ads_limit, ad_reached_countries,   })
+      console.log({ facebookUrl, best_ads_limit, ad_reached_countries, companySelected  })
 
       const pageName = await this.facebookAdsService.getPageNameFromPageUrl(facebookUrl)
       const pageId = await this.facebookAdsService.getPageId(pageName);
@@ -50,7 +50,7 @@ export class FacebookController {
 
       const analysisResults = await this.facebookOpenai.analyzeAds(
         newAds,
-        brandName,
+        brandName,companySelected
       );
  
       

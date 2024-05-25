@@ -34,10 +34,12 @@ export class OpenAIService {
   async sendTextPrompt(
     promptData: GPTads,
     brandName: string,
-  ): Promise<TextAnalysis|TextAnalysisError> {
+    companySelected: any,
+  ): Promise<TextAnalysis | TextAnalysisError> {
     const system_content = `
 ROLE: Imagine that you are a marketing strategy consultant for a new innovative technology. You need to analyze this Facebook text ad from the competition to provide a complete launch strategy. Here are the elements you must cover:
 LANGUAGE : USE ONLY ENGLISH IN YOUR ANSWER.
+THE COMPANY YOUR WORK IN : ${companySelected}
 JSON GUIDELINES:
 value_proposition:Identify the unique selling points  that competitors emphasize to differentiate themselves,  for instance fast delivery, unbeatable quality, or unique features.
 promises:Identify the promise that competitors emphasize to differentiate themselves, for instance fast delivery, unbeatable quality, or unique features.
@@ -92,15 +94,14 @@ ${promptData.ad_creative_bodies}
     } catch (error) {
       console.error('Unexpected error:', error);
       return {
-      
-        value_proposition:"",
-        promises: "",
-        genders: "",
-        emotions: "",
-        tone: "",
-        description: "",
-        cta: "",
-        problem_solving:"",
+        value_proposition: '',
+        promises: '',
+        genders: '',
+        emotions: '',
+        tone: '',
+        description: '',
+        cta: '',
+        problem_solving: '',
       };
     }
   }
@@ -173,11 +174,14 @@ ${promptData.ad_creative_bodies}
   async analyzeCreative(
     promptData: GPTads,
     brandName: string,
+    companySelected: any,
   ): Promise<CreativeAnalysisResult | null> {
-    const creative_prompt = `  I would like you to analyze this image from a ${brandName} advertisement on Facebook. This advertisement is targeted at ${JSON.stringify(
+    const creative_prompt = ` ROLE: I would like you to analyze this image from a ${brandName} advertisement on Facebook. This advertisement is targeted at ${JSON.stringify(
       promptData.target_ages,
     )} in ${JSON.stringify(promptData.target_locations)}.
-      Please consider several essential aspects to provide me with a complete evaluation. Fill in the following information based on your analysis:
+
+    THE COMPANY YOUR WORK IN : ${companySelected}
+    JSON GUIDELINES: Please consider several essential aspects to provide me with a complete evaluation. Fill in the following information based on your analysis:
       You must provide an advanced marketing analysis.
       Key message that the product/service is trying to communicate:
       Key features of the product/service (list of 3 strengths, in 1 word each):
@@ -215,9 +219,12 @@ ${promptData.ad_creative_bodies}
   async analyzeLandingPage(
     promptData: GPTads,
     brandName: string,
+    companySelected: any,
   ): Promise<LandingPageAnalysisResult | null> {
     const landing_page_prompt = ` 
-      Analyze the ${brandName} landing page provided from a marketing perspective for benchmarking or improvement purposes. Based on the following criteria, fill in the JSON below with precise, detailed, and relevant information, feel free to write multiple sentences:
+      ROLE : Analyze the ${brandName} landing page provided from a marketing perspective for benchmarking or improvement purposes.
+      THE COMPANY YOU WORK IN : ${companySelected}
+      JSON GUIDELINES:Based on the following criteria, fill in the JSON below with precise, detailed, and relevant information, feel free to write multiple sentences:
   brand_elements: Identify and describe the visual or textual elements that communicate the brand's identity, such as the logo, brand colors, typography, and slogans.
   communication_tone: Assess the page's communication tone. Is it formal, friendly, persuasive, professional?
   brand_image_consistency: Analyze whether the landing page maintains consistency with the overall brand image through its various elements.
@@ -256,6 +263,8 @@ ${promptData.ad_creative_bodies}
   async analyzeAds(
     ads: GPTads[],
     brandName: string,
+    // json file representing the company infos
+    companySelected: any,
   ): Promise<AnalysisResults[]> {
     let analysisResults: AnalysisResults[];
     try {
@@ -266,13 +275,21 @@ ${promptData.ad_creative_bodies}
           let landingPageAnalysisResult = null;
 
           try {
-            textAnalysisResult = await this.sendTextPrompt(ad, brandName);
+            textAnalysisResult = await this.sendTextPrompt(
+              ad,
+              brandName,
+              companySelected,
+            );
           } catch (error) {
             console.error('Error in text analysis', error);
           }
 
           try {
-            creativeAnalysisResult = await this.analyzeCreative(ad, brandName);
+            creativeAnalysisResult = await this.analyzeCreative(
+              ad,
+              brandName,
+              companySelected,
+            );
           } catch (error) {
             console.error('Error in creative analysis', error);
           }
@@ -281,6 +298,7 @@ ${promptData.ad_creative_bodies}
             landingPageAnalysisResult = await this.analyzeLandingPage(
               ad,
               brandName,
+              companySelected,
             );
           } catch (error) {
             console.error('Error in landing page analysis', error);
