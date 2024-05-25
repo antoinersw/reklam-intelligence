@@ -7,9 +7,7 @@ export class ReportService {
     brandName: string,
     analysisResults: AnalysisResults[],
   ): Promise<string> {
-    // const htmlData = jsonToHtml(brandName, analysisResults);
-    // const date = getDate();
-    // const url = await generatePDFfromHTML(`/Report_facebook_${brandName}_${date}.pdf`, htmlData);
+ 
     const url = 'SUCCESSFULLY NOT GENERATED PDF';
     console.log(url);
     return url;

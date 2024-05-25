@@ -53,7 +53,7 @@ export class FacebookController {
         brandName,
       );
  
-
+      
       // Generate report
       const reportUrl = await this.facebookReport.makeReport(
         brandName,
