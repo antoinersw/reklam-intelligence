@@ -299,11 +299,11 @@ export class FacebookScraperService {
       await sleep(1000);
       // await page.waitForSelector('[data-cookiebanner="accept_button"]',{timeout:2000} );
       // Sélectionner le bouton d'acceptation des cookies par l'attribut data-cookiebanner
-      const acceptCookiesButton = '[data-cookiebanner="accept_button"]';
+      const acceptCookiesButton = '[aria-label="Allow all cookies"]';
 
       // Vérifier si le bouton d'acceptation des cookies existe sur la page
       const acceptButtonExists = (await page.$(acceptCookiesButton)) !== null;
-
+      console.log("acceptButtonExists cookies,", acceptButtonExists)
       if (acceptButtonExists) {
         // Cliquer sur le bouton si trouvé
         await page.click(acceptCookiesButton);
