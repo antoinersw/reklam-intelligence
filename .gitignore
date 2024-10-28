@@ -2,3 +2,4 @@ node_modules
 facebook-api/dist/
 */facebook-api/dist/
 .env*
+facebook-api/.env*
